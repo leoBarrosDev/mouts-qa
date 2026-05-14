@@ -1,0 +1,23 @@
+{
+  "name": "mouts-qa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leoBarrosDev/mouts-qa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leoBarrosDev/mouts-qa/issues"
+  },
+  "homepage": "https://github.com/leoBarrosDev/mouts-qa#readme",
+  "devDependencies": {
+    "cypress": "^15.15.0"
+  }
+}
