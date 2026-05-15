@@ -1,0 +1,7 @@
+google-chrome-stable_current_amd64.deb
+cypress/screenshots/
+cypress/videos/
+node_modules/
+dist/
+.env
+*.log
