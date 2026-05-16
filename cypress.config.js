@@ -4,6 +4,10 @@ module.exports = defineConfig({
   allowCypressEnv: false,
   video: true,
   screenshotOnRunFailure: true,
+  screenshotsFolder: 'cypress/screenshots',
+  screenshotOnRunFailure: true,
+  defaultCommandTimeout: 10000,
+  requestTimeout: 10000,
 
   e2e: {
     baseUrl: 'https://front.serverest.dev',
