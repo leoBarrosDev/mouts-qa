@@ -95,6 +95,8 @@ Validação de fluxo de autenticação da aplicação.
 ## ✅ Gestão de Carrinho
 
 Fluxo principal da jornada de compra do usuário.
+Observação:
+A funcionalidade completa de conversão da lista em carrinho/checkout ainda apresenta comportamento inconsistente na aplicação ServeRest, portanto os cenários foram adaptados para validar integralmente o fluxo atualmente funcional da aplicação.
 
 ### Cobertura:
 - adicionar produto
