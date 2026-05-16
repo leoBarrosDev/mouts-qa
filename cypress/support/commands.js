@@ -10,7 +10,6 @@ Cypress.Commands.add('login', (email, password) => {
 })
 
 Cypress.Commands.add('interceptLogin', () => {
-
   cy.intercept(
     'POST',
     `${API_URL}/login`
@@ -19,35 +18,48 @@ Cypress.Commands.add('interceptLogin', () => {
 
 
 Cypress.Commands.add('loginApi', (email, password) => {
-
   return AuthService
     .login(email, password)
     .then((response) => {
-
-      expect(response.status).to.eq(200)
-
+      expect(response.status, 'Login response status').to.eq(200)
+      expect(
+        response.body.authorization,
+        'Authorization token'
+      ).to.not.be.empty
       return response.body.authorization
     })
 })
 
 
-Cypress.Commands.add('createUser', (isAdmin = true) => {
-
+Cypress.Commands.add('createFinalUser', (isAdmin = false) => {
   const user = {
-
     nome: faker.person.fullName(),
-
     email: faker.internet.email(),
-
     password: '123456',
-
     administrador: isAdmin.toString()
   }
 
   return UserService
     .create(user)
     .then((response) => {
+      return {
+        user,
+        response
+      }
+    })
+})
 
+Cypress.Commands.add('createAdminUser', (isAdmin = true) => {
+  const user = {
+    nome: faker.person.fullName(),
+    email: faker.internet.email(),
+    password: '123456',
+    administrador: isAdmin.toString()
+  }
+
+  return UserService
+    .create(user)
+    .then((response) => {
       return {
         user,
         response
