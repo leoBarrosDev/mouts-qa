@@ -1,16 +1,37 @@
 class HomePage {
 
-    elements = {
+    addProductToList(productName) {
+        cy.contains('.card', productName)
+            .within(() => {
+                cy.get('[data-testid="adicionarNaLista"]')
+                    .click()
+            })
+    }
 
-        homeTitle: () => cy.get('h1'),
-
-        logoutButton: () => cy.get('[data-testid="logout"]')
+    accessShoppingList() {
+        cy.contains('a', 'Lista de Compras')
+            .click()
     }
 
     validateLoginSuccess() {
+        cy.url()
+            .should('include', '/home')
+    }
 
-        this.elements
-            .logoutButton()
+    validateWelcomeMessageWithUsername(username) {
+        elements.messageWelcome()
+            .should('be.visible')
+            .and('contain', `Bem Vindo ${username}`)
+    }
+
+    validateWelcomeMessage() {
+        elements.messageWelcome()
+            .should('be.visible')
+            .and('contain', 'Bem-vindo')
+    }
+
+    validateLoginError() {
+        cy.contains('div', 'Email e/ou senha inválidos')
             .should('be.visible')
     }
 }
