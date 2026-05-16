@@ -2,13 +2,10 @@ import HomePage from '../../support/pages/HomePage'
 
 describe('Login Frontend', () => {
 
-  it('Deve realizar login com sucesso', () => {
-
-    cy.createUser()
+  it('Should access home page successfuly with final user', () => {
+    cy.createFinalUser()
       .then(({ user }) => {
-
         cy.interceptLogin()
-
         cy.login(
           user.email,
           user.password
@@ -21,7 +18,47 @@ describe('Login Frontend', () => {
         cy.url()
           .should('contain', '/home')
 
+        cy.screenshot('after-login-final-user')
         HomePage.validateLoginSuccess()
       })
+  })
+
+  it('Should access home page successfuly with admin user', () => {
+    cy.createAdminUser()
+      .then(({ user }) => {
+        cy.interceptLogin()
+        cy.login(
+          user.email,
+          user.password
+        )
+
+        cy.wait('@loginRequest')
+          .its('response.statusCode')
+          .should('eq', 200)
+
+        cy.url()
+          .should('contain', '/home')
+
+        cy.screenshot('after-login-admin')
+        HomePage.validateLoginSuccess()
+      })
+  })
+
+  it('Should not access home page with invalid credentials', () => {
+    const email = "invalid@example.com"
+    const password = "wrongpassword"
+
+    cy.interceptLogin()
+    cy.login(
+      email,
+      password
+    )
+
+    cy.wait('@loginRequest')
+      .its('response.statusCode')
+      .should('eq', 401)
+
+    cy.screenshot('after-login-error')
+    HomePage.validateLoginError()
   })
 })
