@@ -13,7 +13,9 @@ class AuthService {
       body: {
         email,
         password
-      }
+      },
+      failOnStatusCode: false,
+      retryOnNetworkFailure: true
     })
   }
 }
