@@ -32,6 +32,25 @@ describe('Shopping List Flow', () => {
         HomePage.accessShoppingList()
         ShoppingCartPage.validateProductInList(productName)
         ShoppingCartPage.clearShoppingList()
+        ShoppingCartPage.validateEmptyList(productName)
+      })
+  })
+
+  it('Full flow: create product via API, add from frontend and validate persistence via API', () => {
+    const productName = 'Test Product API'
+    let adminUser
+
+    cy.createAdminUser()
+      .then(({ user }) => {
+        adminUser = user
+        cy.createProductViaAPI(adminUser.email, adminUser.password, productName)
+      })
+      .then(() => {
+        cy.login(adminUser.email, adminUser.password)
+        HomePage.validateLoginSuccess()
+        HomePage.accessProductList()
+        HomePage.validateProductExists(productName)
+        ShoppingCartPage.validateProductInList(productName)
       })
   })
 })

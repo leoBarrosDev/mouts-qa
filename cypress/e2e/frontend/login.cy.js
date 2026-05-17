@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import HomePage from '../../support/pages/HomePage'
 
 describe('Login Frontend', () => {
@@ -47,6 +48,24 @@ describe('Login Frontend', () => {
   it('Should not access home page with invalid credentials', () => {
     const email = "invalid@example.com"
     const password = "wrongpassword"
+
+    cy.interceptLogin()
+    cy.login(
+      email,
+      password
+    )
+
+    cy.wait('@loginRequest')
+      .its('response.statusCode')
+      .should('eq', 401)
+
+    cy.screenshot('after-login-error')
+    HomePage.validateLoginError()
+  })
+
+  it('Should not access home page with user that does not exist', () => {
+    const email = faker.internet.email()
+    const password = faker.internet.password()
 
     cy.interceptLogin()
     cy.login(

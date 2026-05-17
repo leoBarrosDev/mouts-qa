@@ -5,7 +5,7 @@ import HomePage from '../../support/pages/HomePage'
 describe('Cadastro Frontend', () => {
 
     it('Should register admin user successfully', () => {
-        const user = UserFactory.createUser()
+        const user = UserFactory.createAdminUser()
 
         RegisterPage.register(user)
         RegisterPage.validateMessageSuccess()
