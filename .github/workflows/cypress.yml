@@ -7,11 +7,93 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  cypress-run:
+  api-tests:
+    name: API Test Suite
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cypress run
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run API Cypress tests
         uses: cypress-io/github-action@v6
+        with:
+          command: npm run test:api -- --reporter mochawesome --reporter-options reportDir=cypress/results/api,overwrite=false,html=true,json=true
+          browser: chrome
+          record: false
+
+      - name: Upload API test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-cypress-artifacts
+          path: |
+            cypress/results/api/**
+            cypress/screenshots/**
+            cypress/videos/**
+
+  frontend-tests:
+    name: Frontend E2E Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+    env:
+      CI: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start backend for frontend tests
+        run: |
+          npm run start:api &
+          echo $! > .backend.pid
+
+      - name: Wait for backend healthcheck
+        run: npx wait-on http://localhost:3000
+
+      - name: Run frontend Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: ${{ matrix.browser }}
+          command: npm run test:frontend -- --browser ${{ matrix.browser }} --reporter mochawesome --reporter-options reportDir=cypress/results/frontend/${{ matrix.browser }},overwrite=false,html=true,json=true
+          config-file: cypress.config.js
+          record: false
+          # 'retry' is not a valid input for cypress-io/github-action and was removed
+
+      - name: Upload frontend test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-cypress-artifacts-${{ matrix.browser }}
+          path: |
+            cypress/results/frontend/${{ matrix.browser }}/**
+            cypress/screenshots/**
+            cypress/videos/**
+
+      - name: Stop backend
+        if: always()
+        run: |
+          if [ -f .backend.pid ]; then
+            kill $(cat .backend.pid) || true
+          fi
+
