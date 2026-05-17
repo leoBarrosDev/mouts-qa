@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 
 class UserFactory {
-    createUser() {
+    createAdminUser() {
         return {
             nome: faker.person.fullName(),
             email: faker.internet.email(),
