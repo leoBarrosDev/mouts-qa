@@ -1,11 +1,9 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
-  allowCypressEnv: false,
-  video: true,
+  video: false,
   screenshotOnRunFailure: true,
   screenshotsFolder: 'cypress/screenshots',
-  screenshotOnRunFailure: true,
   defaultCommandTimeout: 10000,
   requestTimeout: 10000,
 
@@ -22,6 +20,7 @@ module.exports = defineConfig({
     },
 
     setupNodeEvents(on, config) {
+      return config;
     },
   },
 });

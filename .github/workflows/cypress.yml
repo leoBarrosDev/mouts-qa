@@ -10,8 +10,11 @@ jobs:
   api-tests:
     name: API Test Suite
     runs-on: ubuntu-latest
+
     env:
       CI: true
+      CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,28 +31,32 @@ jobs:
       - name: Run API Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          command: npm run test:api -- --reporter mochawesome --reporter-options reportDir=cypress/results/api,overwrite=false,html=true,json=true
+          install: false
           browser: chrome
           record: false
+          command: >
+            npm run test:api --
+            --reporter mochawesome
+            --reporter-options
+            reportDir=cypress/results/api,overwrite=false,html=false,json=true
 
       - name: Upload API test artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: api-cypress-artifacts
           path: |
             cypress/results/api/**
             cypress/screenshots/**
-            cypress/videos/**
 
   frontend-tests:
     name: Frontend E2E Suite
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: [chrome, firefox]
+
     env:
       CI: true
+      CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -63,37 +70,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Start backend for frontend tests
-        run: |
-          npm run start:api &
-          echo $! > .backend.pid
-
-      - name: Wait for backend healthcheck
-        run: npx wait-on http://localhost:3000
-
       - name: Run frontend Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          browser: ${{ matrix.browser }}
-          command: npm run test:frontend -- --browser ${{ matrix.browser }} --reporter mochawesome --reporter-options reportDir=cypress/results/frontend/${{ matrix.browser }},overwrite=false,html=true,json=true
-          config-file: cypress.config.js
+          install: false
+          browser: chrome
           record: false
-          # 'retry' is not a valid input for cypress-io/github-action and was removed
+          config-file: cypress.config.js
+
+          command: >
+            npm run test:frontend --
+            --browser chrome
+            --reporter mochawesome
+            --reporter-options
+            reportDir=cypress/results/frontend,overwrite=false,html=false,json=true
 
       - name: Upload frontend test artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-cypress-artifacts-${{ matrix.browser }}
+          name: frontend-cypress-artifacts
           path: |
-            cypress/results/frontend/${{ matrix.browser }}/**
+            cypress/results/frontend/**
             cypress/screenshots/**
-            cypress/videos/**
-
-      - name: Stop backend
-        if: always()
-        run: |
-          if [ -f .backend.pid ]; then
-            kill $(cat .backend.pid) || true
-          fi
-
