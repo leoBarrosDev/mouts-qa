@@ -3,20 +3,7 @@ import UserFactory from '../../support/factories/UserFactory'
 import UserService from '../../support/services/UsersService'
 
 describe('Users API', () => {
-    it('Should create user successfully', () => {
-        const user = UserFactory.createUser()
-        UserService
-            .create(user)
-            .then((response) => {
-                expect(response.status).to.eq(201)
-                expect(response.body.message)
-                    .to.eq('Cadastro realizado com sucesso')
-                expect(response.body._id)
-                    .to.not.be.empty
-            })
-    })
-
-    it('Should create admin user successfully', () => {
+    it('Should create final user successfully', () => {
         const user = UserFactory.createFinalUser()
         UserService
             .create(user)
@@ -29,8 +16,46 @@ describe('Users API', () => {
             })
     })
 
+    it('Should create admin user successfully', () => {
+        const user = UserFactory.createAdminUser()
+        UserService
+            .create(user)
+            .then((response) => {
+                expect(response.status).to.eq(201)
+                expect(response.body.message)
+                    .to.eq('Cadastro realizado com sucesso')
+                expect(response.body._id)
+                    .to.not.be.empty
+            })
+    })
+
+    it('Should not create user with existing email', () => {
+        const user = UserFactory.createAdminUser()
+        UserService
+            .create(user)
+            .then(() => {
+                UserService
+                    .create(user)
+                    .then((response) => {
+                        expect(response.status).to.eq(400)
+                        expect(response.body.message)
+                            .to.eq('Este email já está sendo usado')
+                    })
+            })
+    })
+
+    it('Should not create user with blank required field', () => {
+        const user = UserFactory.createAdminUser()
+        user.nome = ''
+        UserService
+            .create(user)
+            .then((response) => {
+                expect(response.status).to.eq(400)
+            })
+    })
+
     it('Should get user by id successfully', () => {
-        const user = UserFactory.createUser()
+        const user = UserFactory.createAdminUser()
         UserService
             .create(user)
             .then((createResponse) => {
@@ -46,7 +71,7 @@ describe('Users API', () => {
     })
 
     it('Should delete user successfully', () => {
-        const user = UserFactory.createUser()
+        const user = UserFactory.createAdminUser()
         UserService
             .create(user)
             .then((createResponse) => {
@@ -62,12 +87,12 @@ describe('Users API', () => {
     })
 
     it('Should update user successfully', () => {
-        const user = UserFactory.createUser()
+        const user = UserFactory.createAdminUser()
         UserService
             .create(user)
             .then((createResponse) => {
                 const userId = createResponse.body._id
-                const updatedUser = UserFactory.createUser()
+                const updatedUser = UserFactory.createAdminUser()
                 UserService
                     .update(userId, updatedUser)
                     .then((response) => {
@@ -78,3 +103,4 @@ describe('Users API', () => {
             })
     })
 })
+
