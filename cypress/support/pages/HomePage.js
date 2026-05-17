@@ -13,25 +13,23 @@ class HomePage {
             .click()
     }
 
+    accessProductList() {
+        cy.contains('a', 'Listar Produtos')
+            .click()
+    }
+
     validateLoginSuccess() {
         cy.url()
             .should('include', '/home')
     }
 
-    validateWelcomeMessageWithUsername(username) {
-        elements.messageWelcome()
-            .should('be.visible')
-            .and('contain', `Bem Vindo ${username}`)
-    }
-
-    validateWelcomeMessage() {
-        elements.messageWelcome()
-            .should('be.visible')
-            .and('contain', 'Bem-vindo')
-    }
-
     validateLoginError() {
         cy.contains('div', 'Email e/ou senha inválidos')
+            .should('be.visible')
+    }
+
+    validateProductExists(productName) {
+        cy.contains(productName)
             .should('be.visible')
     }
 }
