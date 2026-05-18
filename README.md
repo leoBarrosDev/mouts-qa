@@ -149,7 +149,8 @@ Segue abaixo um link de uma colection desenvolvida no Postman, também executand
 
 ![Postman](./cypress/support/images/postman.jpeg)
 
-https://documenter.getpostman.com/view/18794515/2sBXqRjcb9
+<a href="https://documenter.getpostman.com/view/18794515/2sBXqRjcb9" target="_blank">Collection!</a>
+
 ---
 
 # 💻 Clonando projeto
