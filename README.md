@@ -153,7 +153,7 @@ node -v
 npm -v
 ```
 O resultado deve ser semelhante a imagem abaixo:
-![Versões instaladas](./cypress/support/images/nodeAndNom.jpeg)
+![Versões instaladas](./cypress/support/images/nodeAndNpm.jpeg)
 
 Caso não tenha, faça o download pelo site oficial
 
