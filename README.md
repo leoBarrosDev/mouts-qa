@@ -146,6 +146,20 @@ Validação de endpoints protegidos de produtos.
 
 # 💻 Clonando projeto
 
+Obs: É necessário que o Node e o npm estejam instalados, para descobrir se já possui, execute o comando abaixo:
+site oficial segue abaixo:
+```bash
+node -v
+npm -v
+```
+O resultado deve ser semelhante a imagem abaixo:
+![Versões instaladas](./cypress/support/images/nodeAndNom.jpeg)
+
+Caso não tenha, faça o download pelo site oficial
+
+https://nodejs.org/pt-br/download
+
+
 1. Clone o repositório para a sua máquina:
 ```bash
 git clone https://github.com/leoBarrosDev/mouts-qa.git
